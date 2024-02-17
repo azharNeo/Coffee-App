@@ -1,14 +1,14 @@
-import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {COLORS, FONTFAMILY, FONTSIZE, SPACING} from '../../theme/theme';
-import GradientBGIcon from '../GradientBGIcon/GradientBGIcon';
-import ProfilePic from '../ProfilePic/ProfilePic';
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { COLORS, FONTFAMILY, FONTSIZE, SPACING } from "../../theme/theme";
+import GradientBGIcon from "../GradientBGIcon/GradientBGIcon";
+import ProfilePic from "../ProfilePic/ProfilePic";
 
 interface HeaderProps {
   title?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({title}) => {
+const Header: React.FC<HeaderProps> = ({ title }) => {
   return (
     <View style={styles.HeaderContainer}>
       <GradientBGIcon
@@ -27,9 +27,10 @@ export default Header;
 const styles = StyleSheet.create({
   HeaderContainer: {
     paddingHorizontal: SPACING.space_30,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    paddingVertical: SPACING.space_20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   HeaderText: {
     fontFamily: FONTFAMILY.poppins_semibold,
