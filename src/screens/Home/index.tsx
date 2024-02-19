@@ -126,155 +126,151 @@ const Home: React.FC = () => {
   return (
     <View style={styles.ScreenContainer}>
       <StatusBar backgroundColor={COLORS.primaryBlackHex} />
-      <View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.ScrollViewFlex}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              tintColor={COLORS.primaryWhiteHex}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.ScrollViewFlex}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={COLORS.primaryWhiteHex}
+          />
+        }
+      >
+        {/* App Header */}
+        <Header />
+
+        <Text style={styles.ScreenTitle}>
+          Find the best{"\n"}coffee for you
+        </Text>
+
+        {/* Search Input */}
+
+        <View style={styles.InputContainerComponent}>
+          <TouchableOpacity
+            onPress={() => {
+              searchCoffee(searchText);
+            }}
+          >
+            <CustomIcon
+              style={styles.InputIcon}
+              name="search"
+              size={FONTSIZE.size_18}
+              color={
+                searchText.length > 0
+                  ? COLORS.primaryOrangeHex
+                  : COLORS.primaryLightGreyHex
+              }
             />
-          }
-        >
-          {/* App Header */}
-          <Header />
-
-          <Text style={styles.ScreenTitle}>
-            Find the best{"\n"}coffee for you
-          </Text>
-
-          {/* Search Input */}
-
-          <View style={styles.InputContainerComponent}>
+          </TouchableOpacity>
+          <TextInput
+            placeholder="Find Your Coffee..."
+            value={searchText}
+            onChangeText={(text) => {
+              setSearchText(text);
+              searchCoffee(text);
+            }}
+            placeholderTextColor={COLORS.primaryLightGreyHex}
+            style={styles.TextInputContainer}
+          />
+          {searchText.length > 0 && (
             <TouchableOpacity
               onPress={() => {
-                searchCoffee(searchText);
+                resetSearchCoffee();
               }}
             >
               <CustomIcon
                 style={styles.InputIcon}
-                name="search"
-                size={FONTSIZE.size_18}
-                color={
-                  searchText.length > 0
-                    ? COLORS.primaryOrangeHex
-                    : COLORS.primaryLightGreyHex
-                }
+                name="close"
+                size={FONTSIZE.size_16}
+                color={COLORS.primaryLightGreyHex}
               />
             </TouchableOpacity>
-            <TextInput
-              placeholder="Find Your Coffee..."
-              value={searchText}
-              onChangeText={(text) => {
-                setSearchText(text);
-                searchCoffee(text);
-              }}
-              placeholderTextColor={COLORS.primaryLightGreyHex}
-              style={styles.TextInputContainer}
-            />
-            {searchText.length > 0 && (
+          )}
+        </View>
+
+        {/* Categary Scroll */}
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.CategoryScrollViewStyle}
+        >
+          {categories.map((data, index) => (
+            <View
+              key={index.toString()}
+              style={styles.CategoryScrollViewContainer}
+            >
               <TouchableOpacity
+                style={styles.CategoryScrollViewItem}
                 onPress={() => {
-                  resetSearchCoffee();
+                  handleList();
+                  setCategoryIndex({
+                    index: index,
+                    category: categories[index],
+                  });
+                  setSortedCoffee(getCoffeeList(categories[index], CoffeeData));
                 }}
               >
-                <CustomIcon
-                  style={styles.InputIcon}
-                  name="close"
-                  size={FONTSIZE.size_16}
-                  color={COLORS.primaryLightGreyHex}
-                />
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {/* Categary Scroll */}
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.CategoryScrollViewStyle}
-          >
-            {categories.map((data, index) => (
-              <View
-                key={index.toString()}
-                style={styles.CategoryScrollViewContainer}
-              >
-                <TouchableOpacity
-                  style={styles.CategoryScrollViewItem}
-                  onPress={() => {
-                    handleList();
-                    setCategoryIndex({
-                      index: index,
-                      category: categories[index],
-                    });
-                    setSortedCoffee(
-                      getCoffeeList(categories[index], CoffeeData)
-                    );
-                  }}
+                <Text
+                  style={[
+                    styles.CategoryText,
+                    categoryIndex.index === index && {
+                      color: COLORS.primaryOrangeHex,
+                    },
+                  ]}
                 >
-                  <Text
-                    style={[
-                      styles.CategoryText,
-                      categoryIndex.index === index && {
-                        color: COLORS.primaryOrangeHex,
-                      },
-                    ]}
-                  >
-                    {data}
-                  </Text>
-                  {categoryIndex.index === index && (
-                    <View style={styles.ActiveCategory} />
-                  )}
-                </TouchableOpacity>
-              </View>
-            ))}
-          </ScrollView>
-
-          {/* Coffee Flatlist Start */}
-
-          <FlatList
-            ref={ListRef}
-            horizontal
-            ListEmptyComponent={
-              <View style={styles.EmptyListContainer}>
-                <Text style={styles.CategoryText}>Uh-oh!</Text>
-                <Text style={styles.CategoryText}>
-                  No result for {searchText} in Delivery. Please try something
-                  else.
+                  {data}
                 </Text>
-              </View>
-            }
-            showsHorizontalScrollIndicator={false}
-            data={sortedCoffee}
-            contentContainerStyle={styles.FlatListContainer}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItemCofee}
-          />
-          {/* Cofee Flatlist End */}
-
-          <Text style={styles.CoffeeBeansTitle}>Coffee Beans</Text>
-
-          <FlatList
-            horizontal
-            ListEmptyComponent={
-              <View style={styles.EmptyListContainer}>
-                <Text style={styles.CategoryText}>No Beans Available</Text>
-              </View>
-            }
-            showsHorizontalScrollIndicator={false}
-            data={BeansData}
-            contentContainerStyle={[
-              styles.FlatListContainer,
-              { marginBottom: tabBarHeight },
-            ]}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItemCofee}
-          />
+                {categoryIndex.index === index && (
+                  <View style={styles.ActiveCategory} />
+                )}
+              </TouchableOpacity>
+            </View>
+          ))}
         </ScrollView>
-      </View>
+
+        {/* Coffee Flatlist Start */}
+
+        <FlatList
+          ref={ListRef}
+          horizontal
+          ListEmptyComponent={
+            <View style={styles.EmptyListContainer}>
+              <Text style={styles.CategoryText}>Uh-oh!</Text>
+              <Text style={styles.CategoryText}>
+                No result for {searchText} in Delivery. Please try something
+                else.
+              </Text>
+            </View>
+          }
+          showsHorizontalScrollIndicator={false}
+          data={sortedCoffee}
+          contentContainerStyle={styles.FlatListContainer}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItemCofee}
+        />
+        {/* Cofee Flatlist End */}
+
+        <Text style={styles.CoffeeBeansTitle}>Coffee Beans</Text>
+
+        <FlatList
+          horizontal
+          ListEmptyComponent={
+            <View style={styles.EmptyListContainer}>
+              <Text style={styles.CategoryText}>No Beans Available</Text>
+            </View>
+          }
+          showsHorizontalScrollIndicator={false}
+          data={BeansData}
+          contentContainerStyle={[
+            styles.FlatListContainer,
+            { marginBottom: tabBarHeight },
+          ]}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItemCofee}
+        />
+      </ScrollView>
     </View>
   );
 };
@@ -288,8 +284,9 @@ export const CoffeeItem = ({ item, navigation }: CoffeeItemProps) => {
   const navigateToDetails = useCallback(() => {
     navigation.navigate("Details", {
       id: item.id,
+      type: item.type,
     });
-  }, [item.id, navigation]);
+  }, [item.type, item.id, navigation]);
 
   return (
     <TouchableOpacity onPress={navigateToDetails}>

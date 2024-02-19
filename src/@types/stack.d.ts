@@ -4,7 +4,7 @@ declare global {
   }
 }
 
-export type DetailsParamsList = {id: number | string};
+export type DetailsParamsList = { id: number | string; type: string };
 
 export type NativeStackParamList = {
   Tab: undefined;
